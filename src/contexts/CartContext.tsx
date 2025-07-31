@@ -8,6 +8,15 @@ export interface MenuItem {
   category: 'sandwiches' | 'salads' | 'breakfast' | 'drinks';
   image: string;
   featured?: boolean;
+  ingredients: string[];
+  nutritionalValues: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fiber?: number;
+    sodium?: number;
+  };
 }
 
 export interface CartItem extends MenuItem {
