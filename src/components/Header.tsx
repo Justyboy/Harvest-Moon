@@ -33,10 +33,10 @@ const Header = () => {
         Menu
       </Link>
       <Link 
-        to="/cart" 
+        to="/about" 
         onClick={onClose}
         className={`font-medium transition-colors hover:text-primary ${
-          location.pathname === '/cart' ? 'text-primary' : 'text-foreground'
+          location.pathname === '/about' ? 'text-primary' : 'text-foreground'
         }`}
       >
         About
