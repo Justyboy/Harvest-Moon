@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 25 35% 15%;
 
-    --primary: 12 88% 45%;
+    --primary: 25 85% 50%;
     --primary-foreground: 48 100% 96%;
 
-    --secondary: 25 65% 85%;
+    --secondary: 38 45% 75%;
     --secondary-foreground: 25 35% 15%;
 
     --muted: 25 30% 92%;
     --muted-foreground: 25 15% 45%;
 
-    --accent: 35 85% 75%;
+    --accent: 35 70% 65%;
     --accent-foreground: 25 35% 15%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,16 +34,16 @@ All colors MUST be HSL.
 
     --border: 25 20% 88%;
     --input: 25 20% 88%;
-    --ring: 12 88% 45%;
+    --ring: 25 85% 50%;
 
     --radius: 0.75rem;
     
-    /* Deli-specific design tokens */
-    --warm-brown: 25 35% 25%;
-    --rustic-red: 12 88% 45%;
+    /* Harvest Moon-specific design tokens */
+    --harvest-orange: 25 85% 50%;
+    --autumn-brown: 30 45% 35%;
     --cream: 48 100% 96%;
-    --wood-brown: 30 40% 35%;
-    --sage-green: 85 25% 55%;
+    --pumpkin-orange: 22 90% 55%;
+    --earth-brown: 35 40% 40%;
     
     /* Custom shadows and gradients */
     --shadow-warm: 0 4px 20px -4px hsl(var(--warm-brown) / 0.15);

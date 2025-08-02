@@ -58,15 +58,17 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">MR</span>
-            </div>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/97a5ac92-1b1d-4834-b493-6f6f73203264.png" 
+              alt="Harvest Moon Deli Logo"
+              className="w-12 h-12 md:w-14 md:h-14"
+            />
             <div>
               <h1 className="font-handwritten text-2xl md:text-3xl font-bold text-primary">
-                Mama Rosa's
+                Harvest Moon Deli
               </h1>
-              <p className="text-xs text-muted-foreground -mt-1">Family Deli</p>
+              <p className="text-xs text-muted-foreground -mt-1">Fresh • Local • Seasonal</p>
             </div>
           </Link>
 
@@ -96,12 +98,14 @@ const Header = () => {
               <SheetContent>
                 <div className="flex flex-col space-y-6 mt-6">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-primary-foreground font-bold">MR</span>
-                    </div>
+                    <img 
+                      src="/lovable-uploads/97a5ac92-1b1d-4834-b493-6f6f73203264.png" 
+                      alt="Harvest Moon Deli Logo"
+                      className="w-8 h-8"
+                    />
                     <div>
                       <h2 className="font-handwritten text-xl font-bold text-primary">
-                        Mama Rosa's
+                        Harvest Moon Deli
                       </h2>
                     </div>
                   </div>
