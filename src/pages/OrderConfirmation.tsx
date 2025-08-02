@@ -75,8 +75,8 @@ const OrderConfirmation = () => {
                 <div>
                   <p className="font-medium">Pickup Location</p>
                   <p className="text-sm text-muted-foreground">
-                    Mama Rosa's Deli<br />
-                    123 Italian Way, Little Italy
+                    Harvest Moon Deli<br />
+                    123 Main Street, Downtown
                   </p>
                 </div>
               </div>

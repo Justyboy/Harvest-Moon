@@ -301,9 +301,9 @@ const Checkout = () => {
               <div className="bg-secondary/50 rounded-lg p-4 mt-6">
                 <h4 className="font-semibold mb-2">Pickup Information</h4>
                 <p className="text-sm text-muted-foreground">
-                  📍 Mama Rosa's Deli<br />
-                  123 Italian Way, Little Italy<br />
-                  Phone: (555) 123-DELI
+                  📍 Harvest Moon Deli<br />
+                  123 Main Street, Downtown<br />
+                  Phone: (555) 123-4567
                 </p>
               </div>
             </CardContent>

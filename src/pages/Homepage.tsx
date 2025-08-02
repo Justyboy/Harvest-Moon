@@ -16,7 +16,7 @@ const Homepage = () => {
         <div className="absolute inset-0">
           <img 
             src={deliHero} 
-            alt="Mama Rosa's Deli" 
+            alt="Harvest Moon Deli" 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40"></div>
@@ -24,7 +24,7 @@ const Homepage = () => {
         
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
           <h1 className="font-handwritten text-5xl md:text-7xl font-bold mb-4 animate-fade-in">
-            Welcome to Mama Rosa's
+            Welcome to Harvest Moon Deli
           </h1>
           <p className="text-xl md:text-2xl mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             Where every bite tells a story of family tradition and fresh ingredients

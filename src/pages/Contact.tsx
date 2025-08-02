@@ -52,7 +52,7 @@ const Contact = () => {
                   <div className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 text-primary mt-1" />
                     <div>
-                      <p className="font-medium">Mama Rosa's Family Deli</p>
+                      <p className="font-medium">Harvest Moon Deli</p>
                       <p className="text-muted-foreground">123 Main Street</p>
                       <p className="text-muted-foreground">Downtown, NY 10001</p>
                     </div>
@@ -156,7 +156,7 @@ const Contact = () => {
                   Catering Services Available
                 </h3>
                 <p className="text-muted-foreground">
-                  Planning an event? Let Mama Rosa's cater your next meeting, party, or special occasion. 
+                  Planning an event? Let Harvest Moon Deli cater your next meeting, party, or special occasion. 
                   Call us at (555) 123-4567 to discuss your catering needs!
                 </p>
               </CardContent>
