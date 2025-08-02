@@ -33,6 +33,15 @@ const Header = () => {
         Menu
       </Link>
       <Link 
+        to="/catering" 
+        onClick={onClose}
+        className={`font-medium transition-colors hover:text-primary ${
+          location.pathname === '/catering' ? 'text-primary' : 'text-foreground'
+        }`}
+      >
+        Catering
+      </Link>
+      <Link 
         to="/about" 
         onClick={onClose}
         className={`font-medium transition-colors hover:text-primary ${
@@ -60,9 +69,9 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <img 
-              src="/lovable-uploads/97a5ac92-1b1d-4834-b493-6f6f73203264.png" 
+              src="/lovable-uploads/b3b96e6d-f663-4084-9d09-7286ee009c74.png" 
               alt="Harvest Moon Deli Logo"
-              className="w-12 h-12 md:w-14 md:h-14"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
             />
             <div>
               <h1 className="font-handwritten text-2xl md:text-3xl font-bold text-primary">
@@ -99,9 +108,9 @@ const Header = () => {
                 <div className="flex flex-col space-y-6 mt-6">
                   <div className="flex items-center space-x-2">
                     <img 
-                      src="/lovable-uploads/97a5ac92-1b1d-4834-b493-6f6f73203264.png" 
+                      src="/lovable-uploads/b3b96e6d-f663-4084-9d09-7286ee009c74.png" 
                       alt="Harvest Moon Deli Logo"
-                      className="w-8 h-8"
+                      className="w-8 h-8 rounded-full object-cover"
                     />
                     <div>
                       <h2 className="font-handwritten text-xl font-bold text-primary">
