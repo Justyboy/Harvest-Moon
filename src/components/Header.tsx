@@ -1,16 +1,37 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu } from 'lucide-react';
+import { ShoppingCart, Menu, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 const Header = () => {
   const { getTotalItems } = useCart();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const totalItems = getTotalItems();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: 'Error signing out',
+        description: error.message,
+        variant: 'destructive'
+      });
+    } else {
+      toast({
+        title: 'Signed out successfully',
+        description: 'Come back soon!'
+      });
+    }
+  };
 
   const NavLinks = ({ mobile = false, onClose = () => {} }) => (
     <div className={`${mobile ? 'flex flex-col space-y-4' : 'hidden md:flex items-center space-x-8'}`}>
@@ -84,8 +105,34 @@ const Header = () => {
           {/* Desktop Navigation */}
           <NavLinks />
 
-          {/* Cart and Mobile Menu */}
+          {/* Auth, Cart and Mobile Menu */}
           <div className="flex items-center space-x-4">
+            {/* Auth Section */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="hidden md:flex">
+                    <User className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem disabled>
+                    {user.user_metadata?.full_name || user.email}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth" className="hidden md:block">
+                <Button variant="outline" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
             <Link to="/cart">
               <Button variant="outline" size="icon" className="relative">
                 <ShoppingCart className="h-4 w-4" />
@@ -118,7 +165,32 @@ const Header = () => {
                       </h2>
                     </div>
                   </div>
-                  <NavLinks mobile onClose={() => setIsMenuOpen(false)} />
+                   <NavLinks mobile onClose={() => setIsMenuOpen(false)} />
+                   
+                   {/* Mobile Auth Section */}
+                   <div className="pt-4 border-t">
+                     {user ? (
+                       <div className="space-y-4">
+                         <p className="text-sm text-muted-foreground">
+                           {user.user_metadata?.full_name || user.email}
+                         </p>
+                         <Button 
+                           variant="outline" 
+                           onClick={handleSignOut}
+                           className="w-full"
+                         >
+                           <LogOut className="mr-2 h-4 w-4" />
+                           Sign Out
+                         </Button>
+                       </div>
+                     ) : (
+                       <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                         <Button variant="outline" className="w-full">
+                           Sign In / Join Rewards
+                         </Button>
+                       </Link>
+                     )}
+                   </div>
                 </div>
               </SheetContent>
             </Sheet>

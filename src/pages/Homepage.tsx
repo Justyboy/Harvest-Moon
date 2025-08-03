@@ -4,10 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import MenuItemCard from '@/components/MenuItemCard';
 import { menuItems } from '@/data/menuData';
 import deliHero from '@/assets/deli-hero.jpg';
-import { ArrowRight, Clock, Heart, Star } from 'lucide-react';
+import { ArrowRight, Clock, Heart, Star, Gift, Award } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Homepage = () => {
   const featuredItems = menuItems.filter(item => item.featured);
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen">
@@ -121,6 +123,102 @@ const Homepage = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Rewards Section */}
+      <section className="py-16 bg-gradient-to-br from-primary/5 to-secondary/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-handwritten text-4xl md:text-5xl font-bold text-primary mb-4">
+              Join Our Rewards Program
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Earn points with every order and unlock exclusive perks
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <Card className="border-2 border-primary/20 shadow-lg">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Gift className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Earn Points</CardTitle>
+                    <CardDescription>$1 spent = 1 point earned</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• 100 points = $5 off your order</li>
+                  <li>• Double points on your birthday</li>
+                  <li>• Bonus points for catering orders</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-primary/20 shadow-lg">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Award className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Exclusive Perks</CardTitle>
+                    <CardDescription>Members-only benefits</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• Early access to new menu items</li>
+                  <li>• Special member pricing</li>
+                  <li>• Free delivery on orders over $25</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="text-center">
+            {user ? (
+              <div className="space-y-4">
+                <p className="text-lg font-medium text-primary">
+                  Welcome back, {user.user_metadata?.full_name || 'Valued Member'}! 🎉
+                </p>
+                <p className="text-muted-foreground">
+                  You're already earning rewards with every order
+                </p>
+                <Link to="/menu">
+                  <Button size="lg" className="text-lg px-8">
+                    Start Earning Points
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-lg text-muted-foreground mb-6">
+                  Join thousands of satisfied customers earning rewards
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/auth">
+                    <Button size="lg" className="text-lg px-8">
+                      Join Rewards Program
+                      <Gift className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/auth">
+                    <Button variant="outline" size="lg" className="text-lg px-8">
+                      Already a Member? Sign In
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
