@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, Clock, User } from 'lucide-react';
 
@@ -20,6 +22,7 @@ interface OrderForm {
 
 const Checkout = () => {
   const { state, clearCart } = useCart();
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,21 +92,33 @@ const Checkout = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate order submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      // Prepare order data for Supabase
       const orderData = {
-        id: Date.now().toString(),
+        customerName: form.name,
+        phone: form.phone,
+        email: form.email,
+        pickupTime: form.pickupTime,
+        specialInstructions: form.specialInstructions,
         items: state.items,
         total: state.total * 1.085, // Including tax
-        customer: form,
-        orderTime: new Date().toISOString(),
-        status: 'confirmed'
       };
 
-      // Store in localStorage (in real app, this would be sent to backend)
-      const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-      localStorage.setItem('orders', JSON.stringify([...existingOrders, orderData]));
+      // Get auth token if user is logged in
+      const token = user ? (await supabase.auth.getSession()).data.session?.access_token : null;
+
+      // Submit order to Supabase Edge Function
+      const response = await supabase.functions.invoke('submit-order', {
+        body: { orderData },
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to submit order');
+      }
+
+      if (!response.data?.success) {
+        throw new Error('Order submission failed');
+      }
 
       clearCart();
       
@@ -121,16 +136,17 @@ const Checkout = () => {
 
       navigate('/order-confirmation', { 
         state: { 
-          orderId: orderData.id,
+          orderId: response.data.orderId,
           pickupTime: form.pickupTime,
           customerName: form.name
         } 
       });
       
     } catch (error) {
+      console.error('Order submission error:', error);
       toast({
         title: "Order failed",
-        description: "Something went wrong. Please try again.",
+        description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
         variant: "destructive"
       });
     } finally {

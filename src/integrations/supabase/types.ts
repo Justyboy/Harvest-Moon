@@ -19,34 +19,43 @@ export type Database = {
           created_at: string
           customer_name: string
           delivery_method: string
+          email: string | null
           id: string
           order_items: Json
           order_status: string
           phone: string | null
+          pickup_time: string | null
           special_instructions: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           customer_name: string
           delivery_method: string
+          email?: string | null
           id?: string
           order_items: Json
           order_status?: string
           phone?: string | null
+          pickup_time?: string | null
           special_instructions?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           customer_name?: string
           delivery_method?: string
+          email?: string | null
           id?: string
           order_items?: Json
           order_status?: string
           phone?: string | null
+          pickup_time?: string | null
           special_instructions?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
