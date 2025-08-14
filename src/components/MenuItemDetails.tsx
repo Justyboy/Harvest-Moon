@@ -71,17 +71,32 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
             {item.description}
           </p>
 
-          {/* Ingredients */}
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-3">Ingredients</h3>
-            <div className="flex flex-wrap gap-2">
-              {item.ingredients.map((ingredient, index) => (
-                <Badge key={index} variant="outline" className="text-sm">
-                  {ingredient}
-                </Badge>
-              ))}
-            </div>
-          </div>
+          {/* Ingredients - only show if not empty */}
+          {item.ingredients && (
+            typeof item.ingredients === 'string' ? (
+              item.ingredients.trim() && (
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Ingredients</h3>
+                  <div className="p-3 bg-secondary/20 rounded-lg">
+                    <p className="text-sm text-foreground leading-relaxed">{item.ingredients}</p>
+                  </div>
+                </div>
+              )
+            ) : (
+              Array.isArray(item.ingredients) && item.ingredients.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Ingredients</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {item.ingredients.map((ingredient, index) => (
+                      <Badge key={index} variant="outline" className="text-sm">
+                        {ingredient}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )
+            )
+          )}
 
           {/* Nutritional Values */}
           <div>

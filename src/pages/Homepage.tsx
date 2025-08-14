@@ -1,37 +1,66 @@
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import MenuItemCard from '@/components/MenuItemCard';
-import { menuItems } from '@/data/menuData';
-import deliHero from '@/assets/deli-hero.jpg';
-import { ArrowRight, Clock, Heart, Star, Gift, Award } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import MenuItemCard from "@/components/MenuItemCard";
+import deliHero from "@/assets/deli-hero.jpg";
+import { ArrowRight, Clock, Heart, Star, Gift, Award } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { fetchMenuItemsFromSupabase } from "@/lib/menu";
 
 const Homepage = () => {
-  const featuredItems = menuItems.filter(item => item.featured);
+  const [items, setItems] = useState([]);
+  const featuredItems = items.filter((item) => item.featured);
   const { user } = useAuth();
+
+
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const remote = await fetchMenuItemsFromSupabase();
+
+      if (isMounted && remote) setItems(remote);
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src={deliHero} 
-            alt="Harvest Moon Deli" 
+          <img
+            src={deliHero}
+            alt="Harvest Moon Deli"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
-        
+
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
           <h1 className="font-handwritten text-5xl md:text-7xl font-bold mb-4 animate-fade-in">
             Welcome to Harvest Moon Deli
           </h1>
-          <p className="text-xl md:text-2xl mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Where every bite tells a story of family tradition and fresh ingredients
+          <p
+            className="text-xl md:text-2xl mb-8 animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
+          >
+            Where every bite tells a story of family tradition and fresh
+            ingredients
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
+            style={{ animationDelay: "0.4s" }}
+          >
             <Link to="/menu">
               <Button size="lg" className="text-lg px-8 py-6">
                 View Our Menu
@@ -39,7 +68,11 @@ const Homepage = () => {
               </Button>
             </Link>
             <Link to="/contact">
-              <Button variant="outline" size="lg" className="text-lg px-8 py-6 bg-white/10 backdrop-blur border-white/20 text-white hover:bg-white/20">
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg px-8 py-6 bg-white/10 backdrop-blur border-white/20 text-white hover:bg-white/20"
+              >
                 Order Now
               </Button>
             </Link>
@@ -60,7 +93,8 @@ const Homepage = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Authentic Italian recipes passed down through three generations of the Rosa family.
+                  Authentic Italian recipes passed down through three
+                  generations of the Rosa family.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -74,7 +108,8 @@ const Homepage = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  All our ingredients are sourced fresh daily from local farms and trusted suppliers.
+                  All our ingredients are sourced fresh daily from local farms
+                  and trusted suppliers.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -88,7 +123,8 @@ const Homepage = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Quick preparation without compromising quality. Your food, made fresh, served fast.
+                  Quick preparation without compromising quality. Your food,
+                  made fresh, served fast.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -107,7 +143,7 @@ const Homepage = () => {
               Discover why these dishes keep our customers coming back for more
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {featuredItems.map((item) => (
               <div key={item.id} className="animate-fade-in">
@@ -138,7 +174,7 @@ const Homepage = () => {
               Earn points with every order and unlock exclusive perks
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <Card className="border-2 border-primary/20 shadow-lg">
               <CardHeader>
@@ -182,12 +218,13 @@ const Homepage = () => {
               </CardContent>
             </Card>
           </div>
-          
+
           <div className="text-center">
             {user ? (
               <div className="space-y-4">
                 <p className="text-lg font-medium text-primary">
-                  Welcome back, {user.user_metadata?.full_name || 'Valued Member'}! 🎉
+                  Welcome back,{" "}
+                  {user.user_metadata?.full_name || "Valued Member"}! 🎉
                 </p>
                 <p className="text-muted-foreground">
                   You're already earning rewards with every order
@@ -212,7 +249,11 @@ const Homepage = () => {
                     </Button>
                   </Link>
                   <Link to="/auth">
-                    <Button variant="outline" size="lg" className="text-lg px-8">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="text-lg px-8"
+                    >
                       Already a Member? Sign In
                     </Button>
                   </Link>
@@ -230,7 +271,8 @@ const Homepage = () => {
             Ready to Order?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Experience the authentic taste of Italy, right here in your neighborhood
+            Experience the authentic taste of Italy, right here in your
+            neighborhood
           </p>
           <Link to="/menu">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-6">

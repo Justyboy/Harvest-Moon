@@ -8,7 +8,7 @@ export interface MenuItem {
   category: 'sandwiches' | 'salads' | 'breakfast' | 'drinks';
   image: string;
   featured?: boolean;
-  ingredients: string[];
+  ingredients: string[] | string;
   nutritionalValues: {
     calories: number;
     protein: number;
@@ -17,6 +17,7 @@ export interface MenuItem {
     fiber?: number;
     sodium?: number;
   };
+  badge?: string | null;
 }
 
 export interface CartItem extends MenuItem {

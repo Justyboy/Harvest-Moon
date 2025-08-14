@@ -1,18 +1,38 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import MenuItemCard from '@/components/MenuItemCard';
-import { menuItems, categories } from '@/data/menuData';
-import { MenuItem as MenuItemType } from '@/contexts/CartContext';
-import { Phone, Mail, Calendar } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import MenuItemCard from "@/components/MenuItemCard";
+import { categories } from "@/data/menuData";
+import { MenuItem as MenuItemType } from "@/contexts/CartContext";
+import { Phone, Mail, Calendar } from "lucide-react";
+import { fetchMenuItemsFromSupabase } from "@/lib/menu";
 
 const Catering = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [items, setItems] = useState<MenuItemType[]>([]);
 
-  const filteredItems: MenuItemType[] = selectedCategory === 'all' 
-    ? menuItems 
-    : menuItems.filter(item => item.category === selectedCategory);
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const remote = await fetchMenuItemsFromSupabase();
+      if (isMounted && remote) setItems(remote);
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredItems: MenuItemType[] =
+    selectedCategory === "all"
+      ? items
+      : items.filter((item) => item.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
@@ -23,10 +43,11 @@ const Catering = () => {
             Catering Menu
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            Let Harvest Moon Deli cater your next event! From office meetings to family gatherings, 
-            we'll bring our delicious, farm-fresh cuisine directly to you.
+            Let Harvest Moon Deli cater your next event! From office meetings to
+            family gatherings, we'll bring our delicious, farm-fresh cuisine
+            directly to you.
           </p>
-          
+
           {/* Catering Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card className="bg-gradient-to-br from-card to-secondary/20">
@@ -36,7 +57,7 @@ const Catering = () => {
                 <CardDescription>(555) 123-4567</CardDescription>
               </CardHeader>
             </Card>
-            
+
             <Card className="bg-gradient-to-br from-card to-secondary/20">
               <CardHeader className="text-center">
                 <Mail className="w-8 h-8 text-primary mx-auto mb-2" />
@@ -44,7 +65,7 @@ const Catering = () => {
                 <CardDescription>catering@harvestmoondeli.com</CardDescription>
               </CardHeader>
             </Card>
-            
+
             <Card className="bg-gradient-to-br from-card to-secondary/20">
               <CardHeader className="text-center">
                 <Calendar className="w-8 h-8 text-primary mx-auto mb-2" />
@@ -58,8 +79,8 @@ const Catering = () => {
         {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           <Button
-            variant={selectedCategory === 'all' ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory('all')}
+            variant={selectedCategory === "all" ? "default" : "outline"}
+            onClick={() => setSelectedCategory("all")}
             className="rounded-full"
           >
             All Items
@@ -67,7 +88,7 @@ const Catering = () => {
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant={selectedCategory === category.id ? 'default' : 'outline'}
+              variant={selectedCategory === category.id ? "default" : "outline"}
               onClick={() => setSelectedCategory(category.id)}
               className="rounded-full"
             >
@@ -77,10 +98,10 @@ const Catering = () => {
         </div>
 
         {/* Category Header */}
-        {selectedCategory !== 'all' && (
+        {selectedCategory !== "all" && (
           <div className="text-center mb-8">
             <h2 className="font-handwritten text-3xl font-bold text-primary mb-2">
-              {categories.find(cat => cat.id === selectedCategory)?.name}
+              {categories.find((cat) => cat.id === selectedCategory)?.name}
             </h2>
             <Badge variant="secondary" className="text-sm">
               {filteredItems.length} items available for catering
@@ -91,8 +112,8 @@ const Catering = () => {
         {/* Menu Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredItems.map((item, index) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               className="animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >

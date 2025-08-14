@@ -5,9 +5,12 @@ import { useCart, MenuItem } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Info } from 'lucide-react';
 import MenuItemDetails from './MenuItemDetails';
+import MenuItemBadge from './MenuItemBadge';
+
 interface MenuItemCardProps {
   item: MenuItem;
 }
+
 const MenuItemCard = ({
   item
 }: MenuItemCardProps) => {
@@ -35,6 +38,12 @@ const MenuItemCard = ({
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
             
           </div>
+          {/* Badge positioned in top-right corner */}
+          {item.badge && (
+            <div className="absolute top-2 right-2">
+              <MenuItemBadge badge={item.badge} />
+            </div>
+          )}
         </div>
         <CardHeader className="pb-2" onClick={handleCardClick}>
           <CardTitle className="text-lg font-semibold text-foreground">

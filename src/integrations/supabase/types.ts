@@ -59,6 +59,45 @@ export type Database = {
         }
         Relationships: []
       }
+      menu_items: {
+        Row: {
+          badge: string | null
+          category: string
+          description: string | null
+          featured: boolean | null
+          id: string
+          image: string | null
+          ingredients: string[] | null
+          name: string
+          nutritional_values: Json | null
+          price: number
+        }
+        Insert: {
+          badge?: string | null
+          category: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          image?: string | null
+          ingredients?: string[] | null
+          name: string
+          nutritional_values?: Json | null
+          price: number
+        }
+        Update: {
+          badge?: string | null
+          category?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          image?: string | null
+          ingredients?: string[] | null
+          name?: string
+          nutritional_values?: Json | null
+          price?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

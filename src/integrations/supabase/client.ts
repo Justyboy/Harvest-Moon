@@ -2,16 +2,43 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://kigzfqzvipxgakjlvbvr.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZ3pmcXp2aXB4Z2Framx2YnZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxOTA5ODMsImV4cCI6MjA2OTc2Njk4M30.--fGkw3n5X4RTs45uzGBaxqOsN2GTCgkkciOJYXBN_E";
+// Supabase client configured from environment variables.
+// Support both Vite (import.meta.env.VITE_*) and Next-style (process.env.NEXT_PUBLIC_*)
+const viteEnv = (typeof import.meta !== 'undefined' && (import.meta as any).env) || {};
+const nodeEnv = (typeof process !== 'undefined' && (process as any).env) || {};
+
+const SUPABASE_URL: string | undefined =
+  viteEnv.VITE_SUPABASE_URL || nodeEnv.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY: string | undefined =
+  viteEnv.VITE_SUPABASE_ANON_KEY || nodeEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+function createMissingEnvProxy() {
+  const message =
+    'Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local';
+  if (typeof console !== 'undefined' && console.error) {
+    console.error(message);
+  }
+  return new Proxy({}, {
+    get() {
+      throw new Error(message);
+    },
+    apply() {
+      throw new Error(message);
+    }
+  }) as unknown as ReturnType<typeof createClient<Database>>;
+}
 
 // Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
-  }
-});
+export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+export const supabase = (SUPABASE_URL && SUPABASE_ANON_KEY)
+  ? createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        storage: localStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    })
+  : createMissingEnvProxy();

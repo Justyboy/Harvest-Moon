@@ -1,16 +1,63 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import MenuItemCard from '@/components/MenuItemCard';
-import { menuItems, categories } from '@/data/menuData';
-import { MenuItem as MenuItemType } from '@/contexts/CartContext';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import MenuItemCard from "@/components/MenuItemCard";
+import { categories, menuItems as mockMenuItems } from "@/data/menuData";
+import { MenuItem as MenuItemType } from "@/contexts/CartContext";
+import { fetchMenuItemsFromSupabase } from "@/lib/menu";
+import { supabase } from "@/integrations/supabase/client";
 
 const Menu = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [items, setItems] = useState<MenuItemType[]>([]);
 
-  const filteredItems: MenuItemType[] = selectedCategory === 'all' 
-    ? menuItems 
-    : menuItems.filter(item => item.category === selectedCategory);
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const remote = await fetchMenuItemsFromSupabase();
+      if (isMounted) {
+        if (remote) {
+          console.log("Loaded menu items from Supabase:", remote.length);
+          setItems(remote);
+        } else {
+          console.log("Supabase failed, loading mock data:", mockMenuItems.length);
+          // Remove hardcoded badges from mock data to reflect database state
+          const mockDataWithoutBadges = mockMenuItems.map(item => ({
+            ...item,
+            badge: null // Remove hardcoded badges
+          }));
+          setItems(mockDataWithoutBadges);
+        }
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Realtime: subscribe to changes in public.menu_items and refetch
+  useEffect(() => {
+    const channel = supabase
+      .channel("menu-items-public")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "menu_items" },
+        async () => {
+          const remote = await fetchMenuItemsFromSupabase();
+          if (remote) setItems(remote);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const filteredItems: MenuItemType[] =
+    selectedCategory === "all"
+      ? items
+      : items.filter((item) => item.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
@@ -21,16 +68,17 @@ const Menu = () => {
             Our Menu
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From traditional Italian sandwiches to fresh salads and hearty breakfasts, 
-            every dish is crafted with love and the finest ingredients.
+            From traditional Italian sandwiches to fresh salads and hearty
+            breakfasts, every dish is crafted with love and the finest
+            ingredients.
           </p>
         </div>
 
         {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           <Button
-            variant={selectedCategory === 'all' ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory('all')}
+            variant={selectedCategory === "all" ? "default" : "outline"}
+            onClick={() => setSelectedCategory("all")}
             className="rounded-full"
           >
             All Items
@@ -38,7 +86,7 @@ const Menu = () => {
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant={selectedCategory === category.id ? 'default' : 'outline'}
+              variant={selectedCategory === category.id ? "default" : "outline"}
               onClick={() => setSelectedCategory(category.id)}
               className="rounded-full"
             >
@@ -48,10 +96,10 @@ const Menu = () => {
         </div>
 
         {/* Category Header */}
-        {selectedCategory !== 'all' && (
+        {selectedCategory !== "all" && (
           <div className="text-center mb-8">
             <h2 className="font-handwritten text-3xl font-bold text-primary mb-2">
-              {categories.find(cat => cat.id === selectedCategory)?.name}
+              {categories.find((cat) => cat.id === selectedCategory)?.name}
             </h2>
             <Badge variant="secondary" className="text-sm">
               {filteredItems.length} items
@@ -62,8 +110,8 @@ const Menu = () => {
         {/* Menu Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredItems.map((item, index) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               className="animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
