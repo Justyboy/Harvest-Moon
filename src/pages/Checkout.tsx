@@ -133,10 +133,6 @@ const Checkout = () => {
           })}.`
         : 'We will contact you to confirm pickup time.';
       
-      toast({
-        title: "Order confirmed!",
-        description: `Thank you ${form.name}! ${pickupMessage}`,
-      });
 
       navigate('/order-confirmation', { 
         state: { 
