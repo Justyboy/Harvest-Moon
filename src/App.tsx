@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
+import CartSlideOut from "@/components/CartSlideOut";
 import Homepage from "./pages/Homepage";
 import Menu from "./pages/Menu";
 import Cart from "./pages/Cart";
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <CartSlideOut />
           </BrowserRouter>
         </TooltipProvider>
       </CartProvider>

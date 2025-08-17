@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/contexts/CartContext';
 import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/hooks/use-toast';
 import { Plus, X } from 'lucide-react';
 
 interface MenuItemDetailsProps {
@@ -14,16 +13,11 @@ interface MenuItemDetailsProps {
 
 const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
   const { addItem } = useCart();
-  const { toast } = useToast();
 
   if (!item) return null;
 
   const handleAddToCart = () => {
     addItem(item);
-    toast({
-      title: "Added to cart!",
-      description: `${item.name} has been added to your order.`,
-    });
     onClose();
   };
 
@@ -31,7 +25,7 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-handwritten text-primary">
+          <DialogTitle className="text-xl font-handwritten text-primary">
             {item.name}
           </DialogTitle>
           <Button
@@ -46,7 +40,7 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
         
         <div className="space-y-6">
           {/* Image */}
-          <div className="aspect-[4/3] overflow-hidden rounded-lg">
+          <div className="aspect-[3/2] max-w-sm mx-auto overflow-hidden rounded-lg">
             <img
               src={item.image}
               alt={item.name}
@@ -76,7 +70,7 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
             typeof item.ingredients === 'string' ? (
               item.ingredients.trim() && (
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3">Ingredients</h3>
+                  <h3 className="text-md font-semibold text-foreground mb-3">Ingredients</h3>
                   <div className="p-3 bg-secondary/20 rounded-lg">
                     <p className="text-sm text-foreground leading-relaxed">{item.ingredients}</p>
                   </div>
@@ -101,34 +95,34 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
           {/* Nutritional Values */}
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-3">Nutritional Information</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-secondary/20 rounded-lg">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-2 bg-secondary/20 rounded-lg">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-xl font-bold text-primary">
                   {item.nutritionalValues.calories}
                 </div>
                 <div className="text-sm text-muted-foreground">Calories</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-xl font-bold text-primary">
                   {item.nutritionalValues.protein}g
                 </div>
                 <div className="text-sm text-muted-foreground">Protein</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-xl font-bold text-primary">
                   {item.nutritionalValues.carbs}g
                 </div>
                 <div className="text-sm text-muted-foreground">Carbs</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-xl font-bold text-primary">
                   {item.nutritionalValues.fat}g
                 </div>
                 <div className="text-sm text-muted-foreground">Fat</div>
               </div>
               {item.nutritionalValues.fiber && (
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
+                  <div className="text-xl font-bold text-primary">
                     {item.nutritionalValues.fiber}g
                   </div>
                   <div className="text-sm text-muted-foreground">Fiber</div>
@@ -136,7 +130,7 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
               )}
               {item.nutritionalValues.sodium && (
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
+                  <div className="text-xl font-bold text-primary">
                     {item.nutritionalValues.sodium}mg
                   </div>
                   <div className="text-sm text-muted-foreground">Sodium</div>

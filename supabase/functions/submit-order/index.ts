@@ -27,13 +27,19 @@ serve(async (req) => {
     const authHeader = req.headers.get('authorization');
     if (authHeader) {
       const token = authHeader.replace('Bearer ', '');
-      const { data: { user } } = await supabase.auth.getUser(token);
-      
-      if (user) {
-        supabase.auth.setSession({
-          access_token: token,
-          refresh_token: '',
-        });
+      try {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        
+        if (user) {
+          // Set the auth context for this request
+          supabase.auth.setSession({
+            access_token: token,
+            refresh_token: '',
+          });
+        }
+      } catch (authError) {
+        console.log('Auth error (continuing as anonymous):', authError);
+        // Continue without authentication - allow anonymous orders
       }
     }
 
@@ -51,8 +57,15 @@ serve(async (req) => {
       );
     }
 
-    // Get current user if authenticated
-    const { data: { user } } = await supabase.auth.getUser();
+    // Get current user if authenticated (with error handling)
+    let user = null;
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      user = currentUser;
+    } catch (getUserError) {
+      console.log('Could not get user (continuing as anonymous):', getUserError);
+      // Continue as anonymous user
+    }
 
     // Prepare order data
     const orderToInsert = {
@@ -64,7 +77,7 @@ serve(async (req) => {
       order_items: orderData.items,
       delivery_method: 'pickup',
       order_status: 'new',
-      user_id: user?.id || null,
+      user_id: user ? user.id : null,
     };
 
     console.log('Inserting order:', orderToInsert);

@@ -27,13 +27,16 @@ export interface CartItem extends MenuItem {
 interface CartState {
   items: CartItem[];
   total: number;
+  isSlideOutOpen: boolean;
 }
 
 type CartAction =
   | { type: 'ADD_ITEM'; payload: MenuItem }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
-  | { type: 'CLEAR_CART' };
+  | { type: 'CLEAR_CART' }
+  | { type: 'TOGGLE_SLIDE_OUT' }
+  | { type: 'SET_SLIDE_OUT'; payload: boolean };
 
 interface CartContextType {
   state: CartState;
@@ -42,6 +45,8 @@ interface CartContextType {
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
+  toggleSlideOut: () => void;
+  setSlideOutOpen: (open: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -58,14 +63,18 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
             : item
         );
         return {
+          ...state,
           items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+          total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+          isSlideOutOpen: true
         };
       } else {
         const newItems = [...state.items, { ...action.payload, quantity: 1 }];
         return {
+          ...state,
           items: newItems,
-          total: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+          total: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+          isSlideOutOpen: true
         };
       }
     }
@@ -73,6 +82,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     case 'REMOVE_ITEM': {
       const filteredItems = state.items.filter(item => item.id !== action.payload);
       return {
+        ...state,
         items: filteredItems,
         total: filteredItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
       };
@@ -82,6 +92,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       if (action.payload.quantity <= 0) {
         const filteredItems = state.items.filter(item => item.id !== action.payload.id);
         return {
+          ...state,
           items: filteredItems,
           total: filteredItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
         };
@@ -93,13 +104,20 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           : item
       );
       return {
+        ...state,
         items: updatedItems,
         total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
       };
     }
     
     case 'CLEAR_CART':
-      return { items: [], total: 0 };
+      return { ...state, items: [], total: 0 };
+    
+    case 'TOGGLE_SLIDE_OUT':
+      return { ...state, isSlideOutOpen: !state.isSlideOutOpen };
+    
+    case 'SET_SLIDE_OUT':
+      return { ...state, isSlideOutOpen: action.payload };
     
     default:
       return state;
@@ -107,7 +125,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 };
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 });
+  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0, isSlideOutOpen: false });
 
   const addItem = (item: MenuItem) => {
     dispatch({ type: 'ADD_ITEM', payload: item });
@@ -129,6 +147,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return state.items.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const toggleSlideOut = () => {
+    dispatch({ type: 'TOGGLE_SLIDE_OUT' });
+  };
+
+  const setSlideOutOpen = (open: boolean) => {
+    dispatch({ type: 'SET_SLIDE_OUT', payload: open });
+  };
+
   return (
     <CartContext.Provider value={{
       state,
@@ -136,7 +162,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       removeItem,
       updateQuantity,
       clearCart,
-      getTotalItems
+      getTotalItems,
+      toggleSlideOut,
+      setSlideOutOpen
     }}>
       {children}
     </CartContext.Provider>

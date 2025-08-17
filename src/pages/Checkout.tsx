@@ -80,10 +80,10 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!form.name || !form.phone || !form.pickupTime) {
+    if (!form.name || !form.phone || !form.email) {
       toast({
         title: "Please fill in all required fields",
-        description: "Name, phone, and pickup time are required.",
+        description: "Name, phone, and email are required.",
         variant: "destructive"
       });
       return;
@@ -122,16 +122,20 @@ const Checkout = () => {
 
       clearCart();
       
+      const pickupMessage = form.pickupTime 
+        ? `Your order will be ready for pickup at ${new Date(form.pickupTime).toLocaleString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}.`
+        : 'We will contact you to confirm pickup time.';
+      
       toast({
         title: "Order confirmed!",
-        description: `Thank you ${form.name}! Your order will be ready for pickup at ${new Date(form.pickupTime).toLocaleString('en-US', {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true
-        })}.`,
+        description: `Thank you ${form.name}! ${pickupMessage}`,
       });
 
       navigate('/order-confirmation', { 
@@ -208,21 +212,22 @@ const Checkout = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">Email Address *</Label>
                   <Input
                     id="email"
                     type="email"
                     value={form.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     placeholder="your.email@example.com"
+                    required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pickupTime">Pickup Time *</Label>
+                  <Label htmlFor="pickupTime">Pickup Time</Label>
                   <Select value={form.pickupTime} onValueChange={(value) => handleInputChange('pickupTime', value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select pickup time" />
+                      <SelectValue placeholder="Select pickup time (optional)" />
                     </SelectTrigger>
                     <SelectContent>
                       {generateTimeSlots().map((slot) => (
