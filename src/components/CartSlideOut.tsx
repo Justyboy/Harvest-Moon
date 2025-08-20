@@ -62,7 +62,7 @@ const CartSlideOut = () => {
                 <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                   <ShoppingBag className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">Your cart is empty test</h3>
+                <h3 className="font-semibold text-lg mb-2">Your cart is empty</h3>
                 <p className="text-muted-foreground text-sm mb-4">
                   Add some delicious items to get started!
                 </p>
