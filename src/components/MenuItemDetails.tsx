@@ -1,9 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+
 import { MenuItem } from '@/contexts/CartContext';
 import { useCart } from '@/contexts/CartContext';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, ChevronDown } from 'lucide-react';
 
 interface MenuItemDetailsProps {
   item: MenuItem | null;
@@ -92,52 +94,59 @@ const MenuItemDetails = ({ item, isOpen, onClose }: MenuItemDetailsProps) => {
             )
           )}
 
-          {/* Nutritional Values */}
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-3">Nutritional Information</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-2 bg-secondary/20 rounded-lg">
-              <div className="text-center">
-                <div className="text-xl font-bold text-primary">
-                  {item.nutritionalValues.calories}
-                </div>
-                <div className="text-sm text-muted-foreground">Calories</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-primary">
-                  {item.nutritionalValues.protein}g
-                </div>
-                <div className="text-sm text-muted-foreground">Protein</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-primary">
-                  {item.nutritionalValues.carbs}g
-                </div>
-                <div className="text-sm text-muted-foreground">Carbs</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-primary">
-                  {item.nutritionalValues.fat}g
-                </div>
-                <div className="text-sm text-muted-foreground">Fat</div>
-              </div>
-              {item.nutritionalValues.fiber && (
+          {/* Nutritional Values (Collapsible) */}
+          <Collapsible defaultOpen={false}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between group">
+                <span className="text-lg font-semibold text-foreground">Nutritional Information</span>
+                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-2 bg-secondary/20 rounded-lg">
                 <div className="text-center">
                   <div className="text-xl font-bold text-primary">
-                    {item.nutritionalValues.fiber}g
+                    {item.nutritionalValues.calories}
                   </div>
-                  <div className="text-sm text-muted-foreground">Fiber</div>
+                  <div className="text-sm text-muted-foreground">Calories</div>
                 </div>
-              )}
-              {item.nutritionalValues.sodium && (
                 <div className="text-center">
                   <div className="text-xl font-bold text-primary">
-                    {item.nutritionalValues.sodium}mg
+                    {item.nutritionalValues.protein}g
                   </div>
-                  <div className="text-sm text-muted-foreground">Sodium</div>
+                  <div className="text-sm text-muted-foreground">Protein</div>
                 </div>
-              )}
-            </div>
-          </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-primary">
+                    {item.nutritionalValues.carbs}g
+                  </div>
+                  <div className="text-sm text-muted-foreground">Carbs</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-primary">
+                    {item.nutritionalValues.fat}g
+                  </div>
+                  <div className="text-sm text-muted-foreground">Fat</div>
+                </div>
+                {item.nutritionalValues.fiber && (
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-primary">
+                      {item.nutritionalValues.fiber}g
+                    </div>
+                    <div className="text-sm text-muted-foreground">Fiber</div>
+                  </div>
+                )}
+                {item.nutritionalValues.sodium && (
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-primary">
+                      {item.nutritionalValues.sodium}mg
+                    </div>
+                    <div className="text-sm text-muted-foreground">Sodium</div>
+                  </div>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Add to Cart Button */}
           <Button 
