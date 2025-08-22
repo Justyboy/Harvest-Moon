@@ -35,6 +35,7 @@ const MenuItemCard = ({
       <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden bg-gradient-to-br from-card to-secondary/20 cursor-pointer">
         <div className="aspect-[4/3] overflow-hidden relative" onClick={handleCardClick}>
           <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
             
           </div>
@@ -45,17 +46,17 @@ const MenuItemCard = ({
             </div>
           )}
         </div>
-        <CardHeader className="pb-2" onClick={handleCardClick}>
-          <CardTitle className="text-lg font-semibold text-foreground">
+        <CardHeader className="pb-1 px-4 pt-3" onClick={handleCardClick}>
+          <CardTitle className="text-sm md:text-base font-semibold text-foreground">
             {item.name}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-2">
             {item.description}
           </CardDescription>
         </CardHeader>
-        <CardContent className="pb-2" onClick={handleCardClick}>
+        <CardContent className="pb-2 px-4" onClick={handleCardClick}>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold text-primary">
+            <span className="text-lg md:text-xl font-bold text-primary">
               ${item.price.toFixed(2)}
             </span>
             {item.featured && <span className="bg-accent text-accent-foreground text-xs px-2 py-1 rounded-full font-medium">
@@ -63,7 +64,7 @@ const MenuItemCard = ({
               </span>}
           </div>
         </CardContent>
-        <CardFooter className="flex gap-2">
+        <CardFooter className="flex gap-2 px-4 pb-4">
           <Button onClick={handleCardClick} variant="outline" className="flex-1" size="sm">
             <Info className="w-4 h-4 mr-2" />
             Details

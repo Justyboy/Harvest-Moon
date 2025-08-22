@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, Clock, User } from 'lucide-react';
+import { isWithinOperatingHours, getOperatingHoursLabel } from '@/utils/hours';
 
 interface OrderForm {
   name: string;
@@ -79,6 +80,16 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Block orders outside operating hours
+    if (!isWithinOperatingHours()) {
+      toast({
+        title: "We're currently closed",
+        description: `Online ordering is available ${getOperatingHoursLabel()}. Please come back during open hours.`,
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!form.name || !form.phone || !form.email) {
       toast({

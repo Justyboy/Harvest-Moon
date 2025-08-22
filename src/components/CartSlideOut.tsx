@@ -5,10 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
 import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { isWithinOperatingHours, getOperatingHoursLabel } from '@/utils/hours';
 
 const CartSlideOut = () => {
   const { state, updateQuantity, removeItem, setSlideOutOpen } = useCart();
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleQuantityChange = async (id: string, newQuantity: number) => {
     setIsUpdating(id);
@@ -161,7 +164,22 @@ const CartSlideOut = () => {
               </div>
               
               <div className="space-y-2">
-                <Link to="/checkout" className="block" onClick={handleClose}>
+                <Link 
+                  to="/checkout" 
+                  className="block"
+                  onClick={(e) => {
+                    if (!isWithinOperatingHours()) {
+                      e.preventDefault();
+                      toast({
+                        title: "We're currently closed",
+                        description: `Online ordering is available ${getOperatingHoursLabel()}. Please come back during open hours.`,
+                        variant: "destructive",
+                      });
+                    } else {
+                      handleClose();
+                    }
+                  }}
+                >
                   <Button size="lg" className="w-full">
                     Proceed to Checkout
                   </Button>
