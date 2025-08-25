@@ -7,11 +7,13 @@ import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { isWithinOperatingHours, getOperatingHoursLabel } from '@/utils/hours';
+import { useStoreHours } from '@/contexts/StoreHoursContext';
 
 const CartSlideOut = () => {
   const { state, updateQuantity, removeItem, setSlideOutOpen } = useCart();
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const { toast } = useToast();
+  const { showOrderAheadPopup } = useStoreHours();
 
   const handleQuantityChange = async (id: string, newQuantity: number) => {
     setIsUpdating(id);
@@ -170,12 +172,10 @@ const CartSlideOut = () => {
                   onClick={(e) => {
                     if (!isWithinOperatingHours()) {
                       e.preventDefault();
-                      toast({
-                        title: "We're currently closed",
-                        description: `Online ordering is available ${getOperatingHoursLabel()}. Please come back during open hours.`,
-                        variant: "destructive",
-                      });
+                      console.log('Store is closed, showing popup');
+                      showOrderAheadPopup();
                     } else {
+                      console.log('Store is open, proceeding to checkout');
                       handleClose();
                     }
                   }}

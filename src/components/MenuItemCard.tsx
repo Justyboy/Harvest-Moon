@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart, MenuItem } from '@/contexts/CartContext';
+import { useStoreHours } from '@/contexts/StoreHoursContext';
 import { Plus, Info } from 'lucide-react';
 import MenuItemDetails from './MenuItemDetails';
 import MenuItemBadge from './MenuItemBadge';
@@ -16,10 +17,14 @@ const MenuItemCard = ({
   const {
     addItem
   } = useCart();
+  const { isOpen, showOrderAheadPopup } = useStoreHours();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   
   const handleAddToCart = () => {
     addItem(item);
+    if (!isOpen) {
+      showOrderAheadPopup();
+    }
   };
   const handleCardClick = () => {
     setIsDetailsOpen(true);

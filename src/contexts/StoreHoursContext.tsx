@@ -1,8 +1,18 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface StoreHours {
   [key: string]: { open: string; close: string };
 }
+
+interface StoreHoursContextType {
+  isOpen: boolean;
+  shouldShowPopup: boolean;
+  showOrderAheadPopup: () => void;
+  hideOrderAheadPopup: () => void;
+  storeHours: StoreHours;
+}
+
+const StoreHoursContext = createContext<StoreHoursContextType | undefined>(undefined);
 
 const storeHours: StoreHours = {
   monday: { open: '06:00', close: '15:00' },
@@ -14,7 +24,7 @@ const storeHours: StoreHours = {
   sunday: { open: '06:00', close: '15:00' }
 };
 
-export const useStoreHours = () => {
+export const StoreHoursProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [shouldShowPopup, setShouldShowPopup] = useState(false);
 
@@ -36,29 +46,42 @@ export const useStoreHours = () => {
   };
 
   const showOrderAheadPopup = () => {
-    console.log('showOrderAheadPopup called, setting shouldShowPopup to true');
+    console.log('Context: showOrderAheadPopup called, setting shouldShowPopup to true');
     setShouldShowPopup(true);
   };
 
   const hideOrderAheadPopup = () => {
+    console.log('Context: hideOrderAheadPopup called, setting shouldShowPopup to false');
     setShouldShowPopup(false);
   };
 
   useEffect(() => {
-    // Check store status immediately
     checkStoreStatus();
-    
-    // Check every minute
     const interval = setInterval(checkStoreStatus, 60000);
-    
     return () => clearInterval(interval);
   }, []);
 
-  return {
+  const value = {
     isOpen,
     shouldShowPopup,
     showOrderAheadPopup,
     hideOrderAheadPopup,
     storeHours
   };
+
+  console.log('StoreHoursProvider render - shouldShowPopup:', shouldShowPopup);
+
+  return (
+    <StoreHoursContext.Provider value={value}>
+      {children}
+    </StoreHoursContext.Provider>
+  );
+};
+
+export const useStoreHours = () => {
+  const context = useContext(StoreHoursContext);
+  if (context === undefined) {
+    throw new Error('useStoreHours must be used within a StoreHoursProvider');
+  }
+  return context;
 };

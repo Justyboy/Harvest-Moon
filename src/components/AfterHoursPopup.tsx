@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, Clock, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useStoreHours } from '@/contexts/StoreHoursContext';
 import { Link } from 'react-router-dom';
 
 interface AfterHoursPopupProps {
@@ -15,17 +16,21 @@ const AfterHoursPopup = ({ isOpen, onClose }: AfterHoursPopupProps) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const { getTotalItems } = useCart();
+  const { isOpen: storeIsOpen } = useStoreHours();
   const totalItems = getTotalItems();
+
+  console.log('AfterHoursPopup render - isOpen:', isOpen, 'storeIsOpen:', storeIsOpen);
+
 
   // Store hours (can be moved to a config file)
   const storeHours = {
-    monday: { open: '7:00', close: '19:00' },
-    tuesday: { open: '7:00', close: '19:00' },
-    wednesday: { open: '7:00', close: '19:00' },
-    thursday: { open: '7:00', close: '19:00' },
-    friday: { open: '7:00', close: '20:00' },
-    saturday: { open: '8:00', close: '20:00' },
-    sunday: { open: '9:00', close: '18:00' }
+    monday: { open: '6:00', close: '15:00' },
+    tuesday: { open: '6:00', close: '15:00' },
+    wednesday: { open: '6:00', close: '15:00' },
+    thursday: { open: '6:00', close: '15:00' },
+    friday: { open: '6:00', close: '15:00' },
+    saturday: { open: '6:00', close: '15:00' },
+    sunday: { open: '6:00', close: '15:00' }
   };
 
   // Generate available pickup dates (next 7 days)
@@ -104,14 +109,17 @@ const AfterHoursPopup = ({ isOpen, onClose }: AfterHoursPopupProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby="order-ahead-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-primary" />
-            We're Currently Closed
+            {storeIsOpen ? 'Order Ahead' : 'We\'re Currently Closed'}
           </DialogTitle>
-          <DialogDescription>
-            Don't worry! You can still place your order and schedule a pickup time during our business hours.
+          <DialogDescription id="order-ahead-description">
+            {storeIsOpen 
+              ? 'Schedule your order for pickup during our business hours. Perfect for busy mornings or planning ahead!'
+              : 'No problem! You can still place your order now and select a convenient pickup time during our business hours (6:00 AM - 3:00 PM).'
+            }
           </DialogDescription>
         </DialogHeader>
 
@@ -123,6 +131,24 @@ const AfterHoursPopup = ({ isOpen, onClose }: AfterHoursPopupProps) => {
                 <ShoppingBag className="h-4 w-4" />
                 You have {totalItems} item{totalItems !== 1 ? 's' : ''} in your cart
               </div>
+              {!storeIsOpen && (
+                <div className="mt-2 text-sm text-muted-foreground">
+                  Complete your order by selecting a pickup time below
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* After Hours Order Placement */}
+          {!storeIsOpen && totalItems === 0 && (
+            <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <ShoppingBag className="h-4 w-4" />
+                Place Your Order Now
+              </div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                Browse our menu, add items to your cart, then select a pickup time during our business hours
+              </div>
             </div>
           )}
 
@@ -131,16 +157,8 @@ const AfterHoursPopup = ({ isOpen, onClose }: AfterHoursPopupProps) => {
             <h4 className="font-medium">Our Store Hours:</h4>
             <div className="text-sm text-muted-foreground space-y-1">
               <div className="grid grid-cols-2 gap-2">
-                <span>Mon - Thu:</span>
-                <span>7:00 AM - 7:00 PM</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <span>Fri - Sat:</span>
-                <span>7:00 AM - 8:00 PM</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <span>Sunday:</span>
-                <span>9:00 AM - 6:00 PM</span>
+                <span>Daily:</span>
+                <span>6:00 AM - 3:00 PM</span>
               </div>
             </div>
           </div>
@@ -198,7 +216,7 @@ const AfterHoursPopup = ({ isOpen, onClose }: AfterHoursPopupProps) => {
                   disabled={!selectedDate || !selectedTime}
                   className="w-full"
                 >
-                  Schedule Order for Pickup
+                  {!storeIsOpen ? 'Place Order for Pickup' : 'Schedule Order for Pickup'}
                 </Button>
                 <Link to="/cart" onClick={onClose}>
                   <Button variant="outline" className="w-full">
@@ -207,22 +225,21 @@ const AfterHoursPopup = ({ isOpen, onClose }: AfterHoursPopupProps) => {
                 </Link>
               </>
             ) : (
-              <>
-                <Link to="/menu" onClick={onClose}>
-                  <Button className="w-full">
-                    Browse Menu & Place Order
-                  </Button>
-                </Link>
-                <Button 
-                  onClick={handleScheduleOrder}
-                  disabled={!selectedDate || !selectedTime}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Just Schedule Pickup Time
+              <Link to="/menu" onClick={onClose}>
+                <Button className="w-full">
+                  {!storeIsOpen ? 'Browse Menu & Place Order' : 'Browse Menu & Add Items'}
                 </Button>
-              </>
+              </Link>
             )}
+            
+            <Button 
+              onClick={handleScheduleOrder}
+              disabled={!selectedDate || !selectedTime}
+              variant="outline"
+              className="w-full"
+            >
+              Schedule Pickup Time Only
+            </Button>
             
             <Button variant="ghost" onClick={onClose} className="w-full">
               Close

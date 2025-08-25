@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, User, LogOut, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/hooks/useAuth';
+import { useStoreHours } from '@/contexts/StoreHoursContext';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ const Header = () => {
   const { getTotalItems } = useCart();
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const { isOpen, showOrderAheadPopup } = useStoreHours();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
@@ -98,7 +100,24 @@ const Header = () => {
               <h1 className="font-handwritten text-2xl md:text-3xl font-bold text-primary">
                 Harvest Moon Deli
               </h1>
-              <p className="text-xs text-muted-foreground -mt-1">Fresh • Local • Seasonal</p>
+              <div className="flex items-center gap-2 -mt-1">
+                <p className="text-xs text-muted-foreground">Fresh • Local • Seasonal</p>
+                <div className="flex items-center gap-1">
+                  <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className="text-xs font-medium">
+                    {isOpen ? 'Open' : 'Closed'}
+                  </span>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={showOrderAheadPopup}
+                    className="text-xs h-auto p-1 ml-1"
+                  >
+                    <Clock className="h-3 w-3 mr-1" />
+                    Order Ahead
+                  </Button>
+                </div>
+              </div>
             </div>
           </Link>
 

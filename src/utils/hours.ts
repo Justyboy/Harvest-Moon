@@ -1,5 +1,5 @@
-export const OPEN_HOUR = 8;  // 8 AM local time
-export const CLOSE_HOUR = 20; // 8 PM local time (exclusive)
+export const OPEN_HOUR = 6;  // 6 AM local time
+export const CLOSE_HOUR = 15; // 3 PM local time (exclusive)
 
 // Returns true if the provided date (default: now) is within operating hours
 export function isWithinOperatingHours(date: Date = new Date()): boolean {
