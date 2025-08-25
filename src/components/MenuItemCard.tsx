@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart, MenuItem } from '@/contexts/CartContext';
-import { useToast } from '@/hooks/use-toast';
 import { Plus, Info } from 'lucide-react';
 import MenuItemDetails from './MenuItemDetails';
 import MenuItemBadge from './MenuItemBadge';
@@ -17,16 +16,10 @@ const MenuItemCard = ({
   const {
     addItem
   } = useCart();
-  const {
-    toast
-  } = useToast();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  
   const handleAddToCart = () => {
     addItem(item);
-    toast({
-      title: "Added to cart!",
-      description: `${item.name} has been added to your order.`
-    });
   };
   const handleCardClick = () => {
     setIsDetailsOpen(true);
